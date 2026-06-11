@@ -1,0 +1,127 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #2D3142;
+  --brand-navy: #2D3142;
+  --brand-gray: #BFC0C0;
+  --brand-accent: #2563eb;
+  --brand-slate: #4F5D75;
+  --brand-50: #eff6ff;
+  --brand-100: #dbeafe;
+  --brand-500: #2563eb;
+  --brand-600: #2563eb;
+  --brand-700: #1d4ed8;
+  --ring: #2563eb;
+}
+
+.dark {
+  --background: #2D3142;
+  --foreground: #ffffff;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-brand-navy: var(--brand-navy);
+  --color-brand-gray: var(--brand-gray);
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-slate: var(--brand-slate);
+  --color-brand-50: var(--brand-50);
+  --color-brand-100: var(--brand-100);
+  --color-brand-500: var(--brand-500);
+  --color-brand-600: var(--brand-600);
+  --color-brand-700: var(--brand-700);
+  --color-ring: var(--ring);
+  --color-brand-blue: #2563eb;
+  --color-brand-blue-50: #eff6ff;
+  --color-brand-blue-700: #1d4ed8;
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-playfair), Georgia, "Times New Roman", serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+html[dir="rtl"] body {
+  font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+}
+
+[id="how-it-works"],
+[id="features"],
+[id="advantages"],
+[id="faq"],
+[id="contact"] {
+  scroll-margin-top: 5.5rem;
+}
+
+/* Thème dashboard — blanc & navy (sans orange) */
+.dashboard-theme {
+  --brand-accent: #2D3142;
+  --brand-50: #ffffff;
+  --brand-100: #f4f4f5;
+  --brand-500: #2D3142;
+  --brand-600: #2D3142;
+  --brand-700: #1a2332;
+  --ring: #2D3142;
+}
+
+/* Boutons et pastilles colorés → fond blanc, texte navy */
+.dashboard-theme .bg-brand-accent.text-white {
+  background-color: #ffffff;
+  color: #2D3142;
+  border: 1px solid rgba(191, 192, 192, 0.55);
+  box-shadow: 0 1px 2px rgba(45, 49, 66, 0.06);
+}
+
+.dashboard-theme .bg-brand-accent.text-white:hover,
+.dashboard-theme .hover\:bg-brand-700:hover.bg-brand-accent {
+  background-color: #fafafa;
+  color: #2D3142;
+}
+
+.dashboard-theme .bg-brand-accent.text-white .text-white,
+.dashboard-theme .bg-brand-accent.text-white [class*="text-white"] {
+  color: #2D3142 !important;
+}
+
+.dashboard-theme .bg-brand-accent.text-white [class*="text-white/"] {
+  color: rgba(45, 49, 66, 0.65) !important;
+}
+
+/* Boutons principaux bleus dans le dashboard */
+.dashboard-theme .btn-dashboard-blue {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+  border: 1px solid #2563eb !important;
+  box-shadow: 0 1px 3px rgba(37, 99, 235, 0.25);
+}
+
+.dashboard-theme .btn-dashboard-blue:hover {
+  background-color: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+}
+
+.dashboard-theme .btn-dashboard-blue,
+.dashboard-theme .btn-dashboard-blue span,
+.dashboard-theme .btn-dashboard-blue svg {
+  color: #ffffff !important;
+}
