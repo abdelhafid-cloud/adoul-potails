@@ -61,11 +61,12 @@ export function InheritanceResultView({ calculation, locale, headerActions }: Pr
 
   const chartData = calculation.distribution
     .filter((d) => d.amount > 0)
-    .map((d) => {
+    .map((d, i) => {
       const lbl = heirTypeLabel(d.type);
       return {
+        id: `${d.type}-${d.name ?? i}`,
         type: d.type,
-        name: lbl.fr,
+        name: d.name || lbl.fr,
         value: Math.round(d.percentage * 100) / 100,
       };
     });
@@ -159,7 +160,7 @@ export function InheritanceResultView({ calculation, locale, headerActions }: Pr
                   labelLine={{ stroke: "#94a3b8", strokeWidth: 1 }}
                 >
                   {chartData.map((entry, i) => (
-                    <Cell key={entry.type} fill={pieColor(entry.type, i)} stroke="#fff" strokeWidth={2} />
+                    <Cell key={entry.id} fill={pieColor(entry.type, i)} stroke="#fff" strokeWidth={2} />
                   ))}
                 </Pie>
                 <Tooltip
