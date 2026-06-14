@@ -15,6 +15,14 @@ def _total_pct(distribution: list[dict]) -> float:
     return round(sum(d["percentage"] for d in distribution), 2)
 
 
+def _detail_total(distribution: list[dict], heir_details: list[dict]) -> tuple[float, float]:
+    dist_total = round(sum(d["amount"] for d in distribution), 2)
+    detail_total = round(
+        sum(d["amount"] for d in heir_details if d.get("status") == "inherits"), 2
+    )
+    return dist_total, detail_total
+
+
 class TestFaraidEngine:
   def test_husband_mother_father_son(self):
       heirs = [
@@ -133,6 +141,84 @@ class TestFaraidEngine:
       assert normalize_heir_type("paternal_uncle") == "full_paternal_uncle"
       assert normalize_heir_type("son_paternal_uncle") == "son_full_paternal_uncle"
 
+  def test_heir_details_always_match_distribution_total(self):
+      """Invariant : détail par héritier = tableau de distribution (tous cas)."""
+      cases = [
+          [
+              {"type": "wife", "count": 2},
+              {"type": "father", "count": 1},
+              {"type": "mother", "count": 1},
+              {"type": "son", "count": 3},
+          ],
+          [
+              {"type": "wife", "count": 1, "persons": [{"name": "ep1"}]},
+              {"type": "wife", "count": 1, "persons": [{"name": "ep2"}]},
+              {"type": "son", "count": 2},
+          ],
+          [
+              {"type": "husband", "count": 1},
+              {"type": "mother", "count": 1},
+              {"type": "father", "count": 1},
+              {"type": "son", "count": 1},
+          ],
+          [
+              {"type": "wife", "count": 1},
+              {"type": "mother", "count": 1},
+              {"type": "father", "count": 1},
+              {"type": "daughter", "count": 2},
+          ],
+      ]
+      net = Decimal("7750000")
+      for heirs in cases:
+          r = FaraidEngine.compute(heirs, net)
+          dist_total, detail_total = _detail_total(r["distribution"], r["heir_details"])
+          assert dist_total == pytest.approx(float(net), rel=0.001)
+          assert detail_total == pytest.approx(float(net), rel=0.001)
+          assert dist_total == pytest.approx(detail_total, rel=0.001)
+          inheriting = [d for d in r["heir_details"] if d["status"] == "inherits"]
+          assert round(sum(d["percentage"] for d in inheriting), 2) == 100.0
+
+  def test_two_wives_with_sons_heir_details_match_distribution(self):
+      """2 épouses + père + mère + 3 fils : chaque épouse = 1/16 (6,25 %), total 100 %."""
+      heirs = [
+          {
+              "type": "wife", "count": 2,
+              "persons": [{"name": "ep1"}, {"name": "ep2"}],
+          },
+          {"type": "father", "count": 1, "persons": [{"name": "per1"}]},
+          {"type": "mother", "count": 1, "persons": [{"name": "mer1"}]},
+          {
+              "type": "son", "count": 3,
+              "persons": [{"name": "fil1"}, {"name": "fil2"}, {"name": "fil3"}],
+          },
+      ]
+      net = Decimal("7750000")
+      r = FaraidEngine.compute(heirs, net)
+      wives_dist = [d for d in r["distribution"] if d["type"] == "wife"]
+      wives_detail = [d for d in r["heir_details"] if d["type"] == "wife" and d["status"] == "inherits"]
+      assert len(wives_dist) == 2
+      assert len(wives_detail) == 2
+      for d in wives_dist:
+          assert d["percentage"] == pytest.approx(6.25, abs=0.05)
+      for d in wives_detail:
+          assert d["percentage"] == pytest.approx(6.25, abs=0.05)
+          assert d["amount"] == pytest.approx(484375.0, abs=1.0)
+      total_detail = sum(d["amount"] for d in r["heir_details"] if d["status"] == "inherits")
+      assert total_detail == pytest.approx(float(net), rel=0.001)
+      assert round(sum(d["percentage"] for d in r["heir_details"] if d["status"] == "inherits"), 2) == 100.0
+
+  def test_two_wives_separate_entries(self):
+      heirs = [
+          {"type": "wife", "count": 1, "persons": [{"name": "ep1"}]},
+          {"type": "wife", "count": 1, "persons": [{"name": "ep2"}]},
+          {"type": "son", "count": 1},
+      ]
+      r = FaraidEngine.compute(heirs, Decimal("800000"))
+      wives_detail = [d for d in r["heir_details"] if d["type"] == "wife" and d["status"] == "inherits"]
+      assert len(wives_detail) == 2
+      for d in wives_detail:
+          assert d["percentage"] == pytest.approx(6.25, abs=0.05)
+
   def test_service_integration(self):
       data = {
           "total_estate_value": 200000,
@@ -143,6 +229,49 @@ class TestFaraidEngine:
       }
       result = InheritanceService.calculate(data)
       assert result["net_estate_value"] == 200000
+      assert result["faraid_base"] == 200000
+      assert result["wasiyyah"] is None
       assert len(result["distribution"]) >= 2
       assert "legal_proof" in result
       assert "excluded_heirs" in result
+
+  def test_service_with_wasiyyah_deducts_before_faraid(self):
+      data = {
+          "total_estate_value": 300000,
+          "has_wasiyyah": True,
+          "wasiyyah_amount": 50000,
+          "legatee_name": "Ami du défunt",
+          "heirs": [
+              {"type": "wife", "count": 1},
+              {"type": "son", "count": 1},
+          ],
+      }
+      result = InheritanceService.calculate(data)
+      assert result["net_estate_value"] == 300000
+      assert result["wasiyyah"]["wasiyyah_amount_applied"] == 50000
+      assert result["faraid_base"] == 250000
+      assert result["legal_proof"]["faraid_base"] == 250000
+      total_distributed = sum(d["amount"] for d in result["distribution"])
+      assert total_distributed == pytest.approx(250000, rel=0.01)
+
+  def test_service_wasiyyah_without_explicit_flag(self):
+      data = {
+          "total_estate_value": 300000,
+          "wasiyyah_amount": 30000,
+          "heirs": [{"type": "son", "count": 1}],
+      }
+      result = InheritanceService.calculate(data)
+      assert result["wasiyyah"]["wasiyyah_amount_applied"] == 30000
+      assert result["faraid_base"] == 270000
+
+  def test_service_wasiyyah_capped_at_third(self):
+      data = {
+          "total_estate_value": 300000,
+          "has_wasiyyah": True,
+          "wasiyyah_amount": 200000,
+          "legatee_name": "Association",
+          "heirs": [{"type": "son", "count": 2}],
+      }
+      result = InheritanceService.calculate(data)
+      assert result["wasiyyah"]["wasiyyah_amount_applied"] == 100000
+      assert result["faraid_base"] == 200000

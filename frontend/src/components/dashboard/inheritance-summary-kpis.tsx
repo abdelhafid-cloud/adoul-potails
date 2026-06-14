@@ -15,6 +15,7 @@ interface Props {
 export function InheritanceSummaryKpis({ calculation }: Props) {
   const report = calculation.legal_proof?.report;
   const deceased = calculation.deceased_info || report?.deceased;
+  const wasiyyah = calculation.wasiyyah ?? calculation.legal_proof?.wasiyyah;
   const heirsCount = report?.heirs_count ?? calculation.distribution.filter((d) => d.amount > 0).length;
   const excludedCount = report?.excluded_count ?? calculation.excluded_heirs?.length ?? 0;
   const hasAwl = report?.has_awl ?? calculation.calculation_meta?.has_awl;
@@ -87,8 +88,13 @@ export function InheritanceSummaryKpis({ calculation }: Props) {
         ))}
       </div>
 
-      {(hasAwl || hasRadd) && (
+      {(hasAwl || hasRadd || wasiyyah) && (
         <div className="flex flex-wrap gap-2">
+          {wasiyyah && (
+            <span className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-medium text-amber-800">
+              {L.wasiyyahApplied.fr}: {formatCurrency(wasiyyah.wasiyyah_amount_applied ?? 0)} / {L.wasiyyahApplied.ar}
+            </span>
+          )}
           {hasAwl && (
             <span className="rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-medium text-violet-800">
               {L.awlApplied.fr} / {L.awlApplied.ar}

@@ -28,13 +28,29 @@ calculation_model = inheritance_ns.model("InheritanceCalculation", {
     "deceased_death_date": fields.String,
     "deceased_death_place": fields.String,
     "deceased_gender": fields.String,
+    "has_wasiyyah": fields.Boolean,
+    "wasiyyah_amount": fields.Float,
+    "wasiyyah_kind": fields.String,
+    "legatee_name": fields.String,
+    "legatee_name_ar": fields.String,
+    "legatee_is_heir": fields.Boolean,
+    "heirs_consent": fields.Boolean,
+    "funeral_expenses": fields.Float,
 })
+
+
+def _faraid_base_for(c: InheritanceCalculation) -> "Decimal":
+    from decimal import Decimal
+    legal = c.legal_proof or {}
+    if legal.get("faraid_base") is not None:
+        return Decimal(str(legal["faraid_base"]))
+    return Decimal(str(c.net_estate_value or 0))
 
 
 def _faraid_result_for(c: InheritanceCalculation) -> dict:
     from decimal import Decimal
     from app.services.faraid_engine import FaraidEngine
-    net = Decimal(str(c.net_estate_value or 0))
+    net = _faraid_base_for(c)
     return FaraidEngine.compute(c.heirs or [], net)
 
 
@@ -123,6 +139,8 @@ def serialize_calculation(c: InheritanceCalculation) -> dict:
         "legal_verification": legal_verification,
         "legal_proof": legal_proof,
         "deceased_info": legal_proof.get("deceased") or {},
+        "faraid_base": legal_proof.get("faraid_base", float(c.net_estate_value or 0)),
+        "wasiyyah": legal_proof.get("wasiyyah"),
         "dossier_id": str(c.dossier_id) if c.dossier_id else None,
         "notes": c.notes,
         "created_at": c.created_at.isoformat() if c.created_at else None,

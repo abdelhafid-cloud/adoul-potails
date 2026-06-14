@@ -571,6 +571,26 @@ class FaraidEngine:
         return distribution, heir_details
 
     @staticmethod
+    def _active_slots_by_type(merged: list[ShareSlot]) -> dict[str, list[ShareSlot]]:
+        grouped: dict[str, list[ShareSlot]] = {}
+        for s in merged:
+            if s.fraction <= 0 or s.blocked:
+                continue
+            grouped.setdefault(s.heir_type, []).append(s)
+        for slots in grouped.values():
+            slots.sort(key=lambda s: s.name)
+        return grouped
+
+    @staticmethod
+    def _uses_per_person_slots(slots: list[ShareSlot], total_persons: int) -> bool:
+        """True when each merged slot already maps to one heir (e.g. multiple fard slots)."""
+        return (
+            total_persons > 0
+            and len(slots) == total_persons
+            and all(s.count == 1 for s in slots)
+        )
+
+    @staticmethod
     def _build_heir_details(
         heirs: list[dict],
         merged: list[ShareSlot],
@@ -579,9 +599,14 @@ class FaraidEngine:
         inheriting_types: set[str],
         calc_meta: dict | None = None,
     ) -> list[dict]:
-        share_map = {s.heir_type: s for s in merged if s.fraction > 0}
+        slots_by_type = FaraidEngine._active_slots_by_type(merged)
+        total_persons_by_type: dict[str, int] = {}
+        for h in heirs:
+            t = h["type"]
+            total_persons_by_type[t] = total_persons_by_type.get(t, 0) + int(h.get("count", 1))
+
+        slot_cursor: dict[str, int] = {}
         details: list[dict] = []
-        wife_idx = 0
 
         for h in heirs:
             t = h["type"]
@@ -589,34 +614,40 @@ class FaraidEngine:
             profile = HEIR_TYPE_REGISTRY.get(t, {}).get("calc_profile", "custom")
 
             if profile == "status_only":
-                key = "fetus_pending" if t == "fetus" else "missing_pending"
-                reason = EXCLUSION_REASONS[key]
+                reason = EXCLUSION_REASONS["fetus_pending" if t == "fetus" else "missing_pending"]
                 for i in range(1, count + 1):
                     details.append(FaraidEngine._detail_row(
                         t, i, count, 0, 0, "pending", reason, h, slot_is_asaba=False,
                     ))
-                    if t == "wife":
-                        wife_idx += 1
                 continue
 
-            if t in share_map and share_map[t].fraction > 0:
-                slot = share_map[t]
-                split = t in GROUP_FARD_TYPES or t in DIRECT_CHILD_TYPES or count > 1
-                total_frac = slot.fraction
-                if split and count > 1:
-                    per = total_frac / count
-                    for i in range(1, count + 1):
-                        idx = wife_idx + 1 if t == "wife" else i
-                        if t == "wife":
-                            wife_idx += 1
+            type_slots = slots_by_type.get(t, [])
+            total_persons = total_persons_by_type.get(t, 0)
+            total_frac = sum(s.fraction for s in type_slots)
+
+            if total_frac > 0 and FaraidEngine._uses_per_person_slots(type_slots, total_persons):
+                cursor = slot_cursor.get(t, 0)
+                for i in range(1, count + 1):
+                    if cursor < len(type_slots):
+                        per = type_slots[cursor].fraction
+                        cursor += 1
                         details.append(FaraidEngine._detail_row(
-                            t, idx, count, _money(net, per), _pct(per),
-                            "inherits", None, h, slot.is_asaba,
+                            t, i, count, _money(net, per), _pct(per),
+                            "inherits", None, h, type_slots[cursor - 1].is_asaba,
                         ))
-                else:
+                    else:
+                        details.append(FaraidEngine._detail_row(
+                            t, i, count, 0, 0, "blocked",
+                            EXCLUSION_REASONS["residual_no_share"], h,
+                        ))
+                slot_cursor[t] = cursor
+            elif total_frac > 0:
+                per = total_frac / total_persons if total_persons else total_frac
+                is_asaba = type_slots[0].is_asaba if type_slots else False
+                for i in range(1, count + 1):
                     details.append(FaraidEngine._detail_row(
-                        t, 1, count, _money(net, total_frac), _pct(total_frac),
-                        "inherits", None, h, slot.is_asaba,
+                        t, i, count, _money(net, per), _pct(per),
+                        "inherits", None, h, is_asaba,
                     ))
             else:
                 reason_key = FaraidEngine._exclusion_reason(
@@ -624,11 +655,8 @@ class FaraidEngine:
                 )
                 reason = EXCLUSION_REASONS.get(reason_key, EXCLUSION_REASONS["residual_no_share"])
                 for i in range(1, count + 1):
-                    idx = wife_idx + 1 if t == "wife" else i
-                    if t == "wife":
-                        wife_idx += 1
                     details.append(FaraidEngine._detail_row(
-                        t, idx, count, 0, 0, "blocked", reason, h,
+                        t, i, count, 0, 0, "blocked", reason, h,
                     ))
         return details
 

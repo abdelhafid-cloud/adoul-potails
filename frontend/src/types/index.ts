@@ -169,6 +169,25 @@ export interface InheritanceCalculationSummary {
   created_at?: string;
 }
 
+export interface WasiyyahResult {
+  gross_net_estate?: number;
+  net_estate_value?: number;
+  max_wasiyyah?: number;
+  wasiyyah_amount_requested?: number;
+  wasiyyah_amount_applied?: number;
+  remainder_for_heirs?: number;
+  legatee_name?: string;
+  legatee_name_ar?: string;
+  legatee_is_heir?: boolean;
+  heirs_consent?: boolean;
+  wasiyyah_kind?: string;
+  is_valid?: boolean;
+  exceeds_max?: boolean;
+  status_fr?: string;
+  status_ar?: string;
+  lines?: { label_fr: string; label_ar: string; amount: number }[];
+}
+
 export interface InheritanceCalculation {
   id: string;
   title: string;
@@ -179,6 +198,8 @@ export interface InheritanceCalculation {
   debts: number;
   fees: number;
   net_estate_value: number;
+  faraid_base?: number;
+  wasiyyah?: WasiyyahResult | null;
   heirs: HeirInput[];
   distribution: DistributionItem[];
   heir_details?: HeirDetail[];
@@ -257,6 +278,9 @@ export interface LegalProof {
     deceased_ar?: string;
     deceased?: DeceasedInfo;
     net_estate?: number;
+    faraid_base?: number;
+    has_wasiyyah?: boolean;
+    wasiyyah_applied?: number;
     heirs_count?: number;
     excluded_count?: number;
     has_awl?: boolean;
@@ -264,6 +288,9 @@ export interface LegalProof {
     school_fr?: string;
     school_ar?: string;
   };
+  wasiyyah?: WasiyyahResult;
+  faraid_base?: number;
+  net_estate_before_wasiyyah?: number;
 }
 
 export interface DossierDocument {

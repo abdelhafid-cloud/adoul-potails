@@ -20,6 +20,7 @@ import { formatCurrency, cn } from "@/lib/utils";
 import type { Dossier, HeirInput, InheritanceCalculation, PaginatedResponse } from "@/types";
 
 const L = dashboardLabels.pages.inheritance;
+const W = dashboardLabels.pages.wasiyyah;
 const E = dashboardLabels.estate;
 const STEPS = [
   { id: 1, label: L.stepDossier },
@@ -65,6 +66,16 @@ export default function InheritanceWorkflow() {
     { type: "wife", count: 1, persons: syncHeirPersons({ type: "wife", count: 1 }) },
     { type: "son", count: 2, persons: syncHeirPersons({ type: "son", count: 2 }) },
   ]);
+  const [hasWasiyyah, setHasWasiyyah] = useState(false);
+  const [wasiyyah, setWasiyyah] = useState({
+    wasiyyah_amount: 0,
+    wasiyyah_kind: "cash",
+    legatee_name: "",
+    legatee_name_ar: "",
+    legatee_is_heir: false,
+    heirs_consent: false,
+    funeral_expenses: 0,
+  });
   const [error, setError] = useState("");
   const [appliedFields, setAppliedFields] = useState<Set<string>>(new Set());
 
@@ -99,6 +110,8 @@ export default function InheritanceWorkflow() {
         ...estate,
         ...deceased,
         heirs: heirs.map((h) => ({ ...h, persons: syncHeirPersons(h) })),
+        has_wasiyyah: wasiyyah.wasiyyah_amount > 0,
+        ...(wasiyyah.wasiyyah_amount > 0 ? wasiyyah : {}),
       });
       return res.data as InheritanceCalculation;
     },
@@ -141,6 +154,10 @@ export default function InheritanceWorkflow() {
   const goToDetail = (id: string) => router.replace(`/${locale}/dashboard/inheritance?calc_id=${id}`);
 
   const canProceedFromDossier = !!dossierId;
+  const netEstatePreview = Math.max(0, estate.total_estate_value - estate.debts - estate.fees);
+  const maxWasiyyahPreview = Math.round((netEstatePreview / 3) * 100) / 100;
+  const wasiyyahAppliedPreview = Math.min(wasiyyah.wasiyyah_amount, maxWasiyyahPreview);
+  const faraidBasePreview = Math.max(0, netEstatePreview - wasiyyahAppliedPreview);
 
   return (
     <div className="space-y-6">
@@ -320,11 +337,45 @@ export default function InheritanceWorkflow() {
                       />
                     </div>
                   ))}
-                  <div className="rounded-xl border border-brand-gray/20 bg-[#fafafa] p-3">
-                    <BilingualText label={E.netEstate} size="xs" className="mb-1" />
-                    <p className="font-mono text-lg font-semibold text-brand-accent">
-                      {formatCurrency(Math.max(0, estate.total_estate_value - estate.debts - estate.fees))}
+                  <div>
+                    <BilingualLabel label={E.wasiyyah} />
+                    <Input
+                      type="number"
+                      min={0}
+                      value={wasiyyah.wasiyyah_amount || ""}
+                      onChange={(e) =>
+                        setWasiyyah({ ...wasiyyah, wasiyyah_amount: parseFloat(e.target.value) || 0 })
+                      }
+                      placeholder="0"
+                      className="border-brand-gray/50 focus-visible:ring-brand-accent"
+                    />
+                    <p className="mt-1 text-xs text-brand-slate">
+                      {W.maxWasiyyah.fr}: {formatCurrency(maxWasiyyahPreview)} — {L.wasiyyahHint.fr}
                     </p>
+                  </div>
+                  <div className="rounded-xl border border-brand-gray/20 bg-[#fafafa] p-3 space-y-2">
+                    <div>
+                      <BilingualText label={E.netEstate} size="xs" className="mb-1" />
+                      <p className="font-mono text-lg font-semibold text-brand-accent">
+                        {formatCurrency(netEstatePreview)}
+                      </p>
+                    </div>
+                    {wasiyyah.wasiyyah_amount > 0 && (
+                      <>
+                        <div className="border-t border-brand-gray/15 pt-2">
+                          <BilingualText label={L.wasiyyahApplied} size="xs" className="mb-1 text-amber-700" />
+                          <p className="font-mono text-base font-semibold text-amber-800">
+                            {formatCurrency(wasiyyahAppliedPreview)}
+                          </p>
+                        </div>
+                        <div>
+                          <BilingualText label={L.faraidBase} size="xs" className="mb-1 text-emerald-700" />
+                          <p className="font-mono text-base font-semibold text-emerald-800">
+                            {formatCurrency(faraidBasePreview)}
+                          </p>
+                        </div>
+                      </>
+                    )}
                   </div>
                   <div className="space-y-3 rounded-xl border border-brand-gray/25 bg-white p-4">
                     <BilingualText label={L.deceasedSection} size="sm" className="font-medium text-brand-navy" />
@@ -472,6 +523,63 @@ export default function InheritanceWorkflow() {
                       </div>
                     ))}
                   </div>
+                  {wasiyyah.wasiyyah_amount > 0 && (
+                    <div className="space-y-3 rounded-xl border border-amber-100 bg-amber-50/40 p-4">
+                      <BilingualText label={L.wasiyyahSection} size="sm" className="font-medium text-brand-navy" />
+                      <div>
+                        <BilingualLabel label={W.wasiyyahKind} />
+                        <select
+                          className={selectClass}
+                          value={wasiyyah.wasiyyah_kind}
+                          onChange={(e) => setWasiyyah({ ...wasiyyah, wasiyyah_kind: e.target.value })}
+                        >
+                          <option value="cash">{W.kindCash.fr} / {W.kindCash.ar}</option>
+                          <option value="property">{W.kindProperty.fr} / {W.kindProperty.ar}</option>
+                        </select>
+                      </div>
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        <div>
+                          <BilingualLabel label={W.legateeName} />
+                          <Input
+                            value={wasiyyah.legatee_name}
+                            onChange={(e) => setWasiyyah({ ...wasiyyah, legatee_name: e.target.value })}
+                            className="border-brand-gray/50"
+                          />
+                        </div>
+                        <div>
+                          <BilingualLabel label={W.legateeNameAr} />
+                          <Input
+                            dir="rtl"
+                            value={wasiyyah.legatee_name_ar}
+                            onChange={(e) => setWasiyyah({ ...wasiyyah, legatee_name_ar: e.target.value })}
+                            className="border-brand-gray/50"
+                          />
+                        </div>
+                      </div>
+                      <label className="flex items-center gap-2 text-sm text-brand-navy">
+                        <input
+                          type="checkbox"
+                          checked={wasiyyah.legatee_is_heir}
+                          onChange={(e) =>
+                            setWasiyyah({ ...wasiyyah, legatee_is_heir: e.target.checked, heirs_consent: false })
+                          }
+                          className="h-4 w-4 rounded border-brand-gray/50 text-brand-accent"
+                        />
+                        <span>{W.legateeIsHeir.fr} / <span dir="rtl">{W.legateeIsHeir.ar}</span></span>
+                      </label>
+                      {wasiyyah.legatee_is_heir && (
+                        <label className="flex items-center gap-2 text-sm text-brand-navy">
+                          <input
+                            type="checkbox"
+                            checked={wasiyyah.heirs_consent}
+                            onChange={(e) => setWasiyyah({ ...wasiyyah, heirs_consent: e.target.checked })}
+                            className="h-4 w-4 rounded border-brand-gray/50 text-brand-accent"
+                          />
+                          <span>{W.heirsConsent.fr} / <span dir="rtl">{W.heirsConsent.ar}</span></span>
+                        </label>
+                      )}
+                    </div>
+                  )}
                   <div className="flex gap-2">
                     <Button variant="outline" onClick={() => setStep(2)} className="border-brand-slate text-brand-slate">
                       ←

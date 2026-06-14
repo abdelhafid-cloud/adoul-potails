@@ -10,6 +10,7 @@ import { BilingualCardTitle, BilingualText } from "@/components/dashboard/biling
 import { InheritanceLegalProof } from "@/components/dashboard/inheritance-legal-proof";
 import { InheritanceSummaryKpis } from "@/components/dashboard/inheritance-summary-kpis";
 import { HeirDetailsTable } from "@/components/dashboard/heir-details-table";
+import { InheritanceAddHeirPanel } from "@/components/dashboard/inheritance-add-heir-panel";
 import { CHART_COLORS, dashboardLabels } from "@/lib/dashboard-labels";
 import { HEIR_CHART_COLORS, heirTypeLabel, normalizeHeirType } from "@/lib/heir-types";
 import { formatCurrency, cn } from "@/lib/utils";
@@ -58,6 +59,9 @@ interface Props {
 export function InheritanceResultView({ calculation, locale, headerActions }: Props) {
   const queryClient = useQueryClient();
   const [pdfError, setPdfError] = useState("");
+
+  const wasiyyah = calculation.wasiyyah ?? calculation.legal_proof?.wasiyyah;
+  const faraidBase = calculation.faraid_base ?? wasiyyah?.remainder_for_heirs ?? calculation.net_estate_value;
 
   const chartData = calculation.distribution
     .filter((d) => d.amount > 0)
@@ -135,11 +139,36 @@ export function InheritanceResultView({ calculation, locale, headerActions }: Pr
             </div>
           </CardHeader>
           <CardContent>
-            <div className="mb-4 rounded-xl border border-blue-100 bg-brand-blue-50 p-4">
-              <BilingualText label={E.netEstate} size="xs" className="mb-1" />
-              <p className="text-2xl font-bold text-brand-blue">{formatCurrency(calculation.net_estate_value)}</p>
-              {dossierId && (
-                <Button asChild size="sm" variant="outline" className="mt-3 border-brand-accent text-brand-accent">
+            <div className="mb-4 space-y-3">
+              <div className="rounded-xl border border-blue-100 bg-brand-blue-50 p-4">
+                <BilingualText label={E.netEstate} size="xs" className="mb-1" />
+                <p className="text-2xl font-bold text-brand-blue">{formatCurrency(calculation.net_estate_value)}</p>
+              </div>
+              {wasiyyah && (
+                <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
+                  <BilingualText label={L.wasiyyahApplied} size="xs" className="mb-1 text-amber-800" />
+                  <p className="text-2xl font-bold text-amber-900">
+                    {formatCurrency(wasiyyah.wasiyyah_amount_applied ?? 0)}
+                  </p>
+                  {(wasiyyah.legatee_name || wasiyyah.legatee_name_ar) && (
+                    <p className="mt-1 text-xs text-amber-800">
+                      {L.legatee.fr}: {wasiyyah.legatee_name}
+                      {wasiyyah.legatee_name_ar && (
+                        <span className="mx-1" dir="rtl">/ {wasiyyah.legatee_name_ar}</span>
+                      )}
+                    </p>
+                  )}
+                  {wasiyyah.status_fr && (
+                    <p className="mt-1 text-xs text-amber-700">{wasiyyah.status_fr}</p>
+                  )}
+                </div>
+              )}
+              <div className="rounded-xl border border-emerald-100 bg-emerald-50 p-4">
+                <BilingualText label={L.faraidBase} size="xs" className="mb-1 text-emerald-800" />
+                <p className="text-2xl font-bold text-emerald-900">{formatCurrency(faraidBase)}</p>
+              </div>
+              {!wasiyyah && dossierId && (
+                <Button asChild size="sm" variant="outline" className="border-brand-accent text-brand-accent">
                   <Link href={getWasiyyahHref(locale, dossierId, calculation.net_estate_value)}>
                     <ArrowRight className="h-4 w-4" />
                     <span className="ms-1 text-xs">{L.openWasiyyah.fr} / {L.openWasiyyah.ar}</span>
@@ -210,6 +239,10 @@ export function InheritanceResultView({ calculation, locale, headerActions }: Pr
             </div>
 
             {heirDetails.length > 0 && <HeirDetailsTable heirs={heirDetails} />}
+
+            <div className="mt-6">
+              <InheritanceAddHeirPanel calculation={calculation} locale={locale} />
+            </div>
           </CardContent>
         </Card>
 
