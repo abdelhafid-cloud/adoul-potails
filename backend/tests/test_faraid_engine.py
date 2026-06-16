@@ -216,6 +216,8 @@ class TestFaraidEngine:
       r = FaraidEngine.compute(heirs, Decimal("800000"))
       wives_detail = [d for d in r["heir_details"] if d["type"] == "wife" and d["status"] == "inherits"]
       assert len(wives_detail) == 2
+      assert wives_detail[0]["index"] == 1
+      assert wives_detail[1]["index"] == 2
       for d in wives_detail:
           assert d["percentage"] == pytest.approx(6.25, abs=0.05)
 

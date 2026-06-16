@@ -99,7 +99,7 @@ export function HeirDetailsTable({ heirs, className }: Props) {
 
                 return (
                   <tr
-                    key={`${h.type}-${h.index ?? i}`}
+                    key={`heir-row-${i}-${h.type}-${h.name ?? ""}`}
                     className={cn(
                       "border-b border-brand-gray/15 transition-colors last:border-0",
                       i % 2 === 1 && "bg-[#fafafa]/80",

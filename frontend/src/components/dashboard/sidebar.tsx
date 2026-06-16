@@ -29,7 +29,7 @@ const navItems = [
   { href: "/dashboard/calculate/sale", icon: HandCoins, label: dashboardLabels.nav.sale },
   { href: "/dashboard/calculate/donation", icon: Gift, label: dashboardLabels.nav.donation },
   { href: "/dashboard/calculate/procuration", icon: FileSignature, label: dashboardLabels.nav.procuration },
-  { href: "/dashboard/assistant", icon: Bot, label: dashboardLabels.nav.assistant, comingSoon: true },
+  { href: "/dashboard/assistant", icon: Bot, label: dashboardLabels.nav.assistant },
   { href: "/dashboard/ocr", icon: ScanLine, label: dashboardLabels.nav.ocr, comingSoon: true },
 ] as const;
 

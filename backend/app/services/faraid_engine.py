@@ -630,34 +630,43 @@ class FaraidEngine:
                 for i in range(1, count + 1):
                     if cursor < len(type_slots):
                         per = type_slots[cursor].fraction
+                        global_idx = cursor + 1
                         cursor += 1
                         details.append(FaraidEngine._detail_row(
-                            t, i, count, _money(net, per), _pct(per),
+                            t, global_idx, total_persons, _money(net, per), _pct(per),
                             "inherits", None, h, type_slots[cursor - 1].is_asaba,
                         ))
                     else:
+                        global_idx = cursor + 1
+                        cursor += 1
                         details.append(FaraidEngine._detail_row(
-                            t, i, count, 0, 0, "blocked",
+                            t, global_idx, total_persons, 0, 0, "blocked",
                             EXCLUSION_REASONS["residual_no_share"], h,
                         ))
                 slot_cursor[t] = cursor
             elif total_frac > 0:
+                persons_before = slot_cursor.get(t, 0)
                 per = total_frac / total_persons if total_persons else total_frac
                 is_asaba = type_slots[0].is_asaba if type_slots else False
                 for i in range(1, count + 1):
+                    global_idx = persons_before + i
                     details.append(FaraidEngine._detail_row(
-                        t, i, count, _money(net, per), _pct(per),
+                        t, global_idx, total_persons, _money(net, per), _pct(per),
                         "inherits", None, h, is_asaba,
                     ))
+                slot_cursor[t] = persons_before + count
             else:
                 reason_key = FaraidEngine._exclusion_reason(
                     t, ctx, inheriting_types, calc_meta or {},
                 )
                 reason = EXCLUSION_REASONS.get(reason_key, EXCLUSION_REASONS["residual_no_share"])
+                persons_before = slot_cursor.get(t, 0)
                 for i in range(1, count + 1):
+                    global_idx = persons_before + i
                     details.append(FaraidEngine._detail_row(
-                        t, i, count, 0, 0, "blocked", reason, h,
+                        t, global_idx, total_persons, 0, 0, "blocked", reason, h,
                     ))
+                slot_cursor[t] = persons_before + count
         return details
 
     @staticmethod

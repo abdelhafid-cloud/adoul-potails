@@ -291,6 +291,7 @@ export interface LegalProof {
   wasiyyah?: WasiyyahResult;
   faraid_base?: number;
   net_estate_before_wasiyyah?: number;
+  deceased?: DeceasedInfo;
 }
 
 export interface DossierDocument {
