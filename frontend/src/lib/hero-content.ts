@@ -48,10 +48,10 @@ export const heroContent = {
       { label: "DOSSIERS", value: "500+" },
       { label: "CALCULS IA", value: "98%" },
     ],
-    assistantTitle: "ASSISTANT IA ADOUL",
-    assistantDescFr:
-      "Posez vos questions juridiques et obtenez des réponses structurées adaptées à la pratique des adouls marocains.",
-    assistantDescAr:
-      "اطرح أسئلتك القانونية واحصل على إجابات منظمة مخصصة لممارسة العدول في المغرب.",
+    highlightTitle: "HÉRITAGE & ACTES",
+    highlightDescFr:
+      "Calculez l'héritage, la wasiyyah et les frais d'actes selon la pratique des adouls marocains.",
+    highlightDescAr:
+      "احسب الميراث والوصية ورسوم العقود وفق ممارسة العدول المغاربة.",
   },
 };

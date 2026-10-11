@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
-  Calculator, FolderOpen, Bot, ScanLine, FileText,
+  Calculator, FolderOpen, Scale, ScanLine, FileText,
   Clock, ShieldCheck, Layers, TrendingUp, ChevronDown,
 } from "lucide-react";
 import { LandingHeader } from "./header";
@@ -19,7 +19,7 @@ export function LandingPage({ locale }: { locale: string }) {
   const features = [
     { icon: Calculator, title: t("featureInheritance"), desc: t("featureInheritanceDesc") },
     { icon: FolderOpen, title: t("featureDossiers"), desc: t("featureDossiersDesc") },
-    { icon: Bot, title: t("featureAI"), desc: t("featureAIDesc") },
+    { icon: Scale, title: t("featureWasiyyah"), desc: t("featureWasiyyahDesc") },
     { icon: ScanLine, title: t("featureOCR"), desc: t("featureOCRDesc") },
     { icon: FileText, title: t("featurePDF"), desc: t("featurePDFDesc") },
   ];

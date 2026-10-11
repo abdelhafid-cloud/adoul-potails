@@ -30,7 +30,6 @@
     "dossiers": "Dossiers",
     "inheritance": "Héritage",
     "propertyShare": "Partage immobilier",
-    "assistant": "Assistant IA",
     "ocr": "OCR",
     "settings": "Paramètres",
     "logout": "Déconnexion"
@@ -45,8 +44,8 @@
     "featureInheritanceDesc": "Répartition automatique des héritiers selon le droit islamique.",
     "featureDossiers": "Gestion des dossiers",
     "featureDossiersDesc": "Centralisation complète de tous vos dossiers notariaux.",
-    "featureAI": "Assistant IA",
-    "featureAIDesc": "Réponses juridiques spécialisées pour les adouls marocains.",
+    "featureWasiyyah": "Wasiyyah",
+    "featureWasiyyahDesc": "Calcul du legs testamentaire dans la limite du tiers, avant la répartition.",
     "featureOCR": "OCR",
     "featureOCRDesc": "Lecture automatique de documents CIN, contrats et actes.",
     "featurePDF": "Rapports PDF",
@@ -84,7 +83,7 @@
     "testimonial1Quote": "Le calcul d'héritage automatisé m'a fait gagner des heures chaque semaine. Je ne reviendrais pas en arrière.",
     "testimonial1Name": "Mohammed El Amrani",
     "testimonial1Role": "Adoul — Casablanca",
-    "testimonial2Quote": "L'assistant IA répond à mes questions juridiques en arabe et en français. Un vrai gain de sérénité.",
+    "testimonial2Quote": "Les rapports PDF bilingues sont prêts à être remis aux familles. Un vrai gain de sérénité.",
     "testimonial2Name": "Fatima Bennani",
     "testimonial2Role": "Adoula — Rabat",
     "testimonial3Quote": "Nous gérons trois fois plus de dossiers avec la même équipe. La centralisation change tout.",
@@ -99,7 +98,7 @@
     "pricingProName": "Professionnel",
     "pricingProPrice": "599 DH",
     "pricingProDesc": "Pour les cabinets en croissance.",
-    "pricingProFeatures": "5 utilisateurs|Dossiers illimités|Assistant IA|OCR documents|Support prioritaire",
+    "pricingProFeatures": "5 utilisateurs|Dossiers illimités|Wasiyyah et actes|OCR documents|Support prioritaire",
     "pricingCabinetName": "Cabinet",
     "pricingCabinetPrice": "Sur devis",
     "pricingCabinetDesc": "Pour les grands cabinets et réseaux.",
@@ -209,12 +208,6 @@
       "sister": "Sœur",
       "other": "Autre"
     }
-  },
-  "assistant": {
-    "title": "Assistant IA",
-    "placeholder": "Posez votre question juridique...",
-    "newConversation": "Nouvelle conversation",
-    "send": "Envoyer"
   },
   "ocr": {
     "title": "OCR Documents",

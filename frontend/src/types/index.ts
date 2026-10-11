@@ -78,7 +78,6 @@ export interface AdminStats {
   clients_count: number;
   dossiers_count: number;
   calculations_count: number;
-  ai_conversations_count: number;
   activity_today: number;
 }
 

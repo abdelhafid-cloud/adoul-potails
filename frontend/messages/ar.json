@@ -30,7 +30,6 @@
     "dossiers": "الملفات",
     "inheritance": "الميراث",
     "propertyShare": "تقسيم العقار",
-    "assistant": "المساعد الذكي",
     "ocr": "OCR",
     "settings": "الإعدادات",
     "logout": "تسجيل الخروج"
@@ -45,8 +44,8 @@
     "featureInheritanceDesc": "توزيع تلقائي للورثة وفق الشريعة الإسلامية.",
     "featureDossiers": "إدارة الملفات",
     "featureDossiersDesc": "مركزية شاملة لجميع ملفاتك العدلية.",
-    "featureAI": "المساعد الذكي",
-    "featureAIDesc": "إجابات قانونية متخصصة للعدول المغاربة.",
+    "featureWasiyyah": "الوصية",
+    "featureWasiyyahDesc": "حساب الوصية في حدود الثلث، قبل قسمة التركة.",
     "featureOCR": "OCR",
     "featureOCRDesc": "قراءة تلقائية للوثائق والبطاقات الوطنية.",
     "featurePDF": "تقارير PDF",
@@ -84,7 +83,7 @@
     "testimonial1Quote": "حساب الميراث الآلي وفّر لي ساعات كل أسبوع. لن أعود للوراء.",
     "testimonial1Name": "محمد العمراني",
     "testimonial1Role": "عدل — الدار البيضاء",
-    "testimonial2Quote": "المساعد الذكي يجيب على أسئلتي القانونية بالعربية والفرنسية. راحة حقيقية.",
+    "testimonial2Quote": "تقارير PDF باللغتين جاهزة للتسليم للعائلات. راحة حقيقية.",
     "testimonial2Name": "فاطمة بناني",
     "testimonial2Role": "عدلة — الرباط",
     "testimonial3Quote": "ندير ثلاثة أضعاف الملفات بنفس الفريق. المركزية تغيّر كل شيء.",
@@ -99,7 +98,7 @@
     "pricingProName": "احترافي",
     "pricingProPrice": "599 درهم",
     "pricingProDesc": "للمكاتب في نمو.",
-    "pricingProFeatures": "5 مستخدمين|ملفات غير محدودة|المساعد الذكي|OCR للوثائق|دعم أولوية",
+    "pricingProFeatures": "5 مستخدمين|ملفات غير محدودة|الوصية والعقود|OCR للوثائق|دعم أولوية",
     "pricingCabinetName": "مكتب",
     "pricingCabinetPrice": "حسب الطلب",
     "pricingCabinetDesc": "للمكاتب الكبيرة والشبكات.",
@@ -209,12 +208,6 @@
       "sister": "الأخت",
       "other": "أخرى"
     }
-  },
-  "assistant": {
-    "title": "المساعد الذكي",
-    "placeholder": "اطرح سؤالك القانوني...",
-    "newConversation": "محادثة جديدة",
-    "send": "إرسال"
   },
   "ocr": {
     "title": "OCR الوثائق",

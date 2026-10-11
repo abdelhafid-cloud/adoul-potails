@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard, Users, FolderOpen, Calculator,
-  Building2, Bot, ScanLine, LogOut, Scale, Menu, Shield, Activity,
+  Building2, ScanLine, LogOut, Scale, Menu, Shield, Activity,
   Gift, HandCoins, FileSignature,
 } from "lucide-react";
 import { isSuperAdmin } from "@/lib/auth-utils";
@@ -29,7 +29,6 @@ const navItems = [
   { href: "/dashboard/calculate/sale", icon: HandCoins, label: dashboardLabels.nav.sale },
   { href: "/dashboard/calculate/donation", icon: Gift, label: dashboardLabels.nav.donation },
   { href: "/dashboard/calculate/procuration", icon: FileSignature, label: dashboardLabels.nav.procuration },
-  { href: "/dashboard/assistant", icon: Bot, label: dashboardLabels.nav.assistant },
   { href: "/dashboard/ocr", icon: ScanLine, label: dashboardLabels.nav.ocr, comingSoon: true },
 ] as const;
 

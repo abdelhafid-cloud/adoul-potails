@@ -37,13 +37,6 @@ class Config:
 
     REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 
-    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
-    FLOWISE_API_URL = os.getenv("FLOWISE_API_URL", "http://localhost:3000").rstrip("/")
-    FLOWISE_CHATFLOW_ID = os.getenv("FLOWISE_CHATFLOW_ID", "")
-    FLOWISE_API_KEY = os.getenv("FLOWISE_API_KEY", "")
-    QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:6333")
-    QDRANT_COLLECTION = os.getenv("QDRANT_COLLECTION", "adoul_knowledge")
-
     MAIL_SERVER = os.getenv("SMTP_HOST", "localhost")
     MAIL_PORT = int(os.getenv("SMTP_PORT", 587))
     MAIL_USERNAME = os.getenv("SMTP_USER")

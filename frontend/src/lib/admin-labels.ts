@@ -16,7 +16,6 @@ export const adminLabels = {
     dossiers: { fr: "Dossiers (total)", ar: "ملفات (الإجمالي)" },
     calculations: { fr: "Calculs effectués", ar: "حسابات منجزة" },
     activityToday: { fr: "Actions aujourd'hui", ar: "إجراءات اليوم" },
-    aiChats: { fr: "Conversations IA", ar: "محادثات الذكاء الاصطناعي" },
   },
   activity: {
     title: { fr: "Journal d'activité", ar: "سجل النشاط" },

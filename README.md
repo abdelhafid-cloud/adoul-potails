@@ -1,6 +1,6 @@
 # Adoul AI
 
-Plateforme SaaS professionnelle pour les adouls marocains — gestion de dossiers, calculs d'héritage, assistant IA et génération de documents.
+Plateforme SaaS professionnelle pour les adouls marocains — gestion de dossiers, calculs d'héritage, actes et génération de documents.
 
 ## Stack
 
@@ -8,7 +8,7 @@ Plateforme SaaS professionnelle pour les adouls marocains — gestion de dossier
 |--------|-------------|
 | Frontend | Next.js 15, TypeScript, Tailwind, Shadcn UI, React Query, Zustand |
 | Backend | Flask, SQLAlchemy, PostgreSQL, JWT, Celery, Redis |
-| IA | OpenAI, LangChain, Qdrant, OCR, RAG |
+| Documents | OCR (Tesseract), rapports PDF |
 | Infra | Docker, Nginx, GitHub Actions |
 
 ## Démarrage rapide

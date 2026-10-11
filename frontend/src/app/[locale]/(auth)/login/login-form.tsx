@@ -121,7 +121,7 @@ export default function LoginForm({ locale }: { locale: string }) {
   const highlights = [
     { fr: "Accès sécurisé à votre espace", ar: "وصول آمن إلى مساحتك" },
     { fr: "Gestion dossiers & héritage", ar: "إدارة الملفات والميراث" },
-    { fr: "Assistant IA intégré", ar: "مساعد ذكي مدمج" },
+    { fr: "Actes, wasiyyah et rapports PDF", ar: "العقود والوصية وتقارير PDF" },
   ];
 
   return (

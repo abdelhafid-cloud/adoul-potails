@@ -115,10 +115,10 @@ export function HeroSection({ locale }: HeroSectionProps) {
             </div>
 
             <div className="bg-brand-navy px-8 py-7 text-white">
-              <p className="text-[11px] font-semibold tracking-[0.2em] text-brand-accent">{card.assistantTitle}</p>
-              <p className="mt-3 text-sm leading-relaxed text-white/85">{card.assistantDescFr}</p>
+              <p className="text-[11px] font-semibold tracking-[0.2em] text-brand-accent">{card.highlightTitle}</p>
+              <p className="mt-3 text-sm leading-relaxed text-white/85">{card.highlightDescFr}</p>
               <p dir="rtl" lang="ar" className="mt-3 text-sm leading-relaxed text-white/70">
-                {card.assistantDescAr}
+                {card.highlightDescAr}
               </p>
             </div>
           </div>

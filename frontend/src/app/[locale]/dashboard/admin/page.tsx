@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import {
-  Building2, Users, FolderOpen, Calculator, Activity, MessageSquare, ChevronRight,
+  Building2, Users, FolderOpen, Calculator, Activity, ChevronRight,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -37,7 +37,6 @@ export default function AdminOverviewPage() {
     { label: S.calculations, value: stats?.calculations_count ?? 0, icon: Calculator, color: "text-emerald-600 bg-emerald-50" },
     { label: S.clients, value: stats?.clients_count ?? 0, icon: Users, color: "text-violet-600 bg-violet-50" },
     { label: S.activityToday, value: stats?.activity_today ?? 0, icon: Activity, color: "text-amber-700 bg-amber-50" },
-    { label: S.aiChats, value: stats?.ai_conversations_count ?? 0, icon: MessageSquare, color: "text-brand-slate bg-[#fafafa]" },
   ];
 
   return (

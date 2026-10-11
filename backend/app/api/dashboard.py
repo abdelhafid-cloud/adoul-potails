@@ -6,7 +6,7 @@ from sqlalchemy import func
 from app.middleware.auth import jwt_required_custom, permission_required
 from app.models import (
     Client, Dossier, InheritanceCalculation, PropertyShare,
-    Document, AIConversation, AuditLog, User, Cabinet,
+    Document, AuditLog, User, Cabinet,
     ActCalculation,
 )
 from app.models.role import Role
@@ -134,7 +134,6 @@ class AdminStats(Resource):
             "clients_count": Client.query.filter_by(deleted_at=None).count(),
             "dossiers_count": Dossier.query.filter_by(deleted_at=None).count(),
             "calculations_count": inheritance + acts + property_c,
-            "ai_conversations_count": AIConversation.query.filter_by(deleted_at=None).count(),
             "activity_today": AuditLog.query.filter(AuditLog.created_at >= today_start).count(),
         }, 200
 
